@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'catalog',
+    name: 'products',
     component: function () {
       return import(/* webpackChunkName: "about" */ '../views/CatalogPage.vue')
     }
