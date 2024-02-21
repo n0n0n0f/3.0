@@ -106,7 +106,17 @@ export default createStore({
     logout(state){
       state.user_token = null;
       localStorage.clear();
-    }
+    },
+    loginSuccess(state, token) {
+      state.user_token = token;
+      try {
+        localStorage.token = token;
+      } catch (error) {
+        console.error("localStorage Error:", error);
+      }
+      // Перенаправление на главную страницу после успешной аутентификации
+      window.location.href = "/";
+    },
 
   },
   actions: {
@@ -120,10 +130,7 @@ export default createStore({
         const response = await axios.post('https://jurapro.bhuser.ru/api-shop/login', userInfo);
 
         if (response.status === 200) {
-          state.user_token = response.data.data.user_token;
-          localStorage.token = state.user_token;
-          // Перенаправление на главную страницу после успешной аутентификации
-          window.location.href = "/";
+          commit('loginSuccess', response.data.data.user_token);
         }
       } catch (error) {
         if (error.response) {
@@ -140,7 +147,8 @@ export default createStore({
         } else {
           console.error("Login Error:", error);
         }
-      }}},
+      }
+    }},
   modules: {
   }
 })
