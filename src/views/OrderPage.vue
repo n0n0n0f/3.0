@@ -42,5 +42,55 @@ export default {
 </script>
 
 <style scoped>
+.orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #4b0082;
+}
 
+.order-header {
+  margin-bottom: 20px;
+}
+
+.order {
+  border: 1px solid #8a2be2;
+  border-radius: 8px;
+  width: 80%;
+  padding: 20px;
+  margin-bottom: 40px;
+  background-color: #e6e6fa;
+}
+
+.product {
+  border: 1px solid #8a2be2;
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #d8bfd8;
+}
+
+.prevPage {
+  font-size: 18px;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #8a2be2;
+  transition: background-color 0.3s ease;
+}
+
+.prevPage:hover {
+  background-color: #9400d3;
+}
+
+.prevPage:active {
+  background-color: #6a5acd;
+}
+
+.msg {
+  margin-top: 100px;
+  font-style: italic;
+}
 </style>
