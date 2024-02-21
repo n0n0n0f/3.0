@@ -1,24 +1,45 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Catalog from '../components/Catalog.vue'
-import Registration from '../components/Registration.vue'
-import Login from '../components/Login.vue'
-import Cart from '../components/Cart.vue'
-import Orders from '../components/Orders.vue'
-
-Vue.use(VueRouter)
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  { path: '/', component: Catalog },
-  { path: '/registration', component: Registration },
-  { path: '/login', component: Login },
-  { path: '/cart', component: Cart },
-  { path: '/orders', component: Orders }
+  {
+    path: '/',
+    name: 'catalog',
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/CatalogPage.vue')
+    }
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/CartPage.vue')
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/LoginPage.vue')
+    }
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/RegistrationPage.vue')
+    }
+  },
+  {
+    path: '/order',
+    name: 'order',
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/OrderPage.vue')
+    }
+  },
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 
