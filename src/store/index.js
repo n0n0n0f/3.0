@@ -10,7 +10,9 @@ export default createStore({
     email: '',
     password: '',
     user_token: null,
-    user_auth: false
+    user_auth: false,
+    loginError: null,
+    signupError: null,
   },
   getters: {
   },
@@ -109,6 +111,7 @@ export default createStore({
     },
     loginSuccess(state, token) {
       state.user_token = token;
+      console.log("Login Success. User token:", token);
       try {
         localStorage.token = token;
       } catch (error) {
@@ -117,16 +120,31 @@ export default createStore({
       // Перенаправление на главную страницу после успешной аутентификации
       window.location.href = "/";
     },
+    loginError(state, errorMessage) {
+      state.loginError = errorMessage;
+      console.error("Login Error:", errorMessage);
+    },
+    signupSuccess(state, token) {
+      state.user_token = token;
+      console.log("Signup Success. User token:", token);
+      try {
+        localStorage.token = token;
+      } catch (error) {
+        console.error("localStorage Error:", error);
+      }
+      // Перенаправление на страницу входа после успешной регистрации
+      window.location.href = "/login";
+    },
+    signupError(state, errorMessage) {
+      state.signupError = errorMessage;
+      console.error("Signup Error:", errorMessage);
+    },
+
 
   },
   actions: {
-    async login({ state, commit }) {
+    async login({ state, commit }, userInfo) {
       try {
-        let userInfo = {
-          email: state.email,
-          password: state.password
-        }
-
         const response = await axios.post('https://jurapro.bhuser.ru/api-shop/login', userInfo);
 
         if (response.status === 200) {
@@ -137,15 +155,27 @@ export default createStore({
           const { status, data } = error.response;
           if (status === 401) {
             commit('loginError', data.error.message);
-          } else if (status === 403) {
-            commit('accessForbidden', data.error.message);
-          } else if (status === 404) {
-            commit('resourceNotFound', data.error.message);
-          } else if (status === 422) {
-            commit('validationError', data.error.errors);
           }
         } else {
           console.error("Login Error:", error);
+        }
+      }
+    },
+    async signup({ state, commit }, userInfo) {
+      try {
+        const response = await axios.post('https://jurapro.bhuser.ru/api-shop/signup', userInfo);
+
+        if (response.status === 201) {
+          commit('signupSuccess', response.data.data.user_token);
+        }
+      } catch (error) {
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 401) {
+            commit('signupError', data.error.message);
+          }
+        } else {
+          console.error("Signup Error:", error);
         }
       }
     }},
