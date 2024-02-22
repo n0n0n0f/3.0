@@ -63,7 +63,6 @@ export default createStore({
       let indexCart = state.realCart.indexOf(product);
       state.realCart.splice(indexCart, 1);
 
-      // Отправка запроса к API
       axios.delete(`http://localhost:8080/api/cart/${product.id}`)
           .then(response => console.log(response))
           .catch(error => console.error(error));
@@ -74,10 +73,12 @@ export default createStore({
       state.realCart.splice(0, state.realCart.length);
       console.log(state.orders);
       // Отправка запроса к API
-      axios.post('http://localhost:8080/api/orders', newOrders) // Замените URL на соответствующий
-          .then(response => console.log(response))
-
+      axios.post('https://jurapro.bhuser.ru/api-shop/order', item)
+          .then(response => {
+            console.log("Product added to cart:", response.data);
+          })
           .catch(error => console.error(error));
+
     },
     async login(state){
 
