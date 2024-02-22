@@ -1,16 +1,16 @@
 <template>
-  <div class="shopping-cart">
+  <div class="cart-container">
     <div class="cart-header">
       <router-link class="back-link" to="/">Вернуться назад</router-link>
     </div>
     <div v-show="store.state.realCart.length === 0">
       <h2 class="empty-msg">Корзина пуста</h2>
     </div>
-    <div class="cart-items" v-show="store.state.realCart.length > 0">
-      <div class="item" v-for="(item, index) in store.state.realCart" :key="item.id">
+    <div class="cart-items-container" v-show="store.state.realCart.length > 0">
+      <div class="cart-item" v-for="(item, index) in store.state.realCart" :key="item.id">
         <div class="item-details">
           <div class="item-info">
-            <p class="item-title">{{ item.name }}</p>
+            <p class="item-name">{{ item.name }}</p>
             <p class="item-description">{{ item.description }}</p>
             <p class="item-price">Цена: <span class="price">{{ item.price }}</span></p>
           </div>
@@ -26,6 +26,7 @@
     <router-link to="/order" class="order-button" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
   </div>
 </template>
+
 <script>
 import store from "@/store";
 export default {
@@ -42,8 +43,9 @@ export default {
   }
 };
 </script>
+
 <style scoped>
-.shopping-cart {
+.cart-container {
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -79,11 +81,11 @@ export default {
   text-align: center;
 }
 
-.cart-items {
+.cart-items-container {
   margin-bottom: 20px;
 }
 
-.item {
+.cart-item {
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -101,7 +103,7 @@ export default {
   flex: 1;
 }
 
-.item-title {
+.item-name {
   font-size: 22px;
   font-weight: bold;
   color: #333;

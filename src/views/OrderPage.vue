@@ -1,11 +1,11 @@
 <template>
-  <div class="orders">
+  <div class="orders-container">
     <h2>Your Orders:</h2>
     <div class="order-header">
-      <router-link class="prevPage" to="/">Go Back</router-link>
+      <router-link class="prev-link" to="/">Go Back</router-link>
     </div>
     <div v-show="store.state.orders.length === 0">
-      <h2 class="msg">You have no orders at the moment.</h2>
+      <h2 class="no-orders-msg">You have no orders at the moment.</h2>
     </div>
     <div class="order" v-for="order in store.state.orders" :key="order.id">
       <div class="product" v-for="product in order" :key="product.id">
@@ -15,7 +15,7 @@
         <p><strong>Price:</strong> {{ product.price * product.quantity }}</p>
       </div>
       <hr>
-      <p><strong>Total: {{ fullPrice(order) }}</strong></p>
+      <p><strong>Total: {{ calculateTotalPrice(order) }}</strong></p>
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    fullPrice(order) {
+    calculateTotalPrice(order) {
       let totalPrice = 0;
       for (let i = 0; i < order.length; i++) {
         totalPrice += order[i].price * order[i].quantity;
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style scoped>
-.orders {
+.orders-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,7 +71,7 @@ export default {
   background-color: #d8bfd8;
 }
 
-.prevPage {
+.prev-link {
   font-size: 18px;
   color: #fff;
   text-decoration: none;
@@ -81,15 +81,15 @@ export default {
   transition: background-color 0.3s ease;
 }
 
-.prevPage:hover {
+.prev-link:hover {
   background-color: #9400d3;
 }
 
-.prevPage:active {
+.prev-link:active {
   background-color: #6a5acd;
 }
 
-.msg {
+.no-orders-msg {
   margin-top: 100px;
   font-style: italic;
 }

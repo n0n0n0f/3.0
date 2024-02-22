@@ -1,23 +1,24 @@
 <template>
-  <div class="form-header">
-    <router-link class="prevPage" to="/">Назад</router-link>
+  <div class="form-container">
+    <router-link class="prev-link" to="/">Назад</router-link>
+    <form @submit.prevent="store.commit('login')" class="login-form">
+      <label class="form-label">Эл. почта:</label>
+      <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
+      <span v-if="!isEmailValid" class="error-message">Некорректный адрес эл. почты</span>
+      <label class="form-label">Пароль:</label>
+      <input type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
+      <span v-if="!isPasswordValid" class="error-message">Пароль должен содержать минимум 6 символов</span>
+      <input type="submit" value="Войти" class="submit-button">
+    </form>
   </div>
-  <form @submit.prevent="store.commit('login')" class="login-form">
-    <label class="label">Эл. почта:</label>
-    <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
-    <span v-if="!isEmailValid" class="error-message">Некорректный адрес эл. почты</span>
-    <label class="label">Пароль:</label>
-    <input type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
-    <span v-if="!isPasswordValid" class="error-message">Пароль должен содержать минимум 6 символов</span>
-    <input type="submit" value="Войти" class="submit-button">
-  </form>
 </template>
+
 <script>
 import store from "@/store";
 export default {
   computed: {
     store() {
-      return store
+      return store;
     },
     isEmailValid() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,11 +30,30 @@ export default {
   },
 }
 </script>
+
 <style scoped>
-.form-header {
+.form-container {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+.prev-link {
+  font-size: 22px;
+  color: #fff;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  background-color: #8a2be2;
+  display: flex;
+  width: 160px;
+  height: 50px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.prev-link:hover {
+  background-color: #7e349d;
 }
 
 .login-form {
@@ -44,7 +64,7 @@ export default {
   display: flex;
 }
 
-.label {
+.form-label {
   font-size: 22px;
   margin-bottom: 5px;
   color: #8a2be2;
@@ -66,7 +86,7 @@ export default {
 }
 
 .error {
-  border-color: red; /* добавляем стиль для выделения неверных полей */
+  border-color: red;
 }
 
 .error-message {
@@ -86,24 +106,6 @@ export default {
 }
 
 .submit-button:hover {
-  background-color: #7e349d;
-}
-
-.prevPage {
-  font-size: 22px;
-  color: #fff;
-  text-decoration: none;
-  align-items: center;
-  justify-content: center;
-  background-color: #8a2be2;
-  display: flex;
-  width: 160px;
-  height: 50px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.prevPage:hover {
   background-color: #7e349d;
 }
 </style>

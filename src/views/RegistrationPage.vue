@@ -1,28 +1,29 @@
 <template>
-  <div class="form-container">
-    <div class="form-header">
-      <router-link class="prevPage" to="/">Назад</router-link>
+  <div class="registration-container">
+    <div class="registration-header">
+      <router-link class="prev-link" to="/">Назад</router-link>
     </div>
     <form @submit.prevent="store.commit('registration')" class="registration-form">
-      <label for="fio" class="label">ФИО:</label>
+      <label for="fio" class="form-label">ФИО:</label>
       <input id="fio" type="text" required v-model="store.state.fio" :class="{ 'input-field': true, 'error': !isFioValid }">
       <p v-if="!isFioValid" class="error-message">Введите корректное ФИО</p>
-      <label for="email" class="label">Эл. почта:</label>
+      <label for="email" class="form-label">Эл. почта:</label>
       <input id="email" type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
       <p v-if="!isEmailValid" class="error-message">Введите корректный адрес электронной почты</p>
-      <label for="password" class="label">Пароль:</label>
+      <label for="password" class="form-label">Пароль:</label>
       <input id="password" type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
       <p v-if="!isPasswordValid" class="error-message">Пароль должен содержать не менее 6 символов</p>
       <input type="submit" value="Регистрация" class="submit-button">
     </form>
   </div>
 </template>
+
 <script>
 import store from "@/store";
 export default {
   computed: {
     store() {
-      return store
+      return store;
     },
     isFioValid() {
       return this.store.state.fio.trim() !== '';
@@ -37,8 +38,9 @@ export default {
   },
 }
 </script>
+
 <style scoped>
-.form-container {
+.registration-container {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
@@ -46,14 +48,14 @@ export default {
   background-color: #f7f7f7;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.form-header {
+.registration-header {
   margin-bottom: 20px;
 }
 .registration-form {
   display: flex;
   flex-direction: column;
 }
-.label {
+.form-label {
   font-size: 22px; /* Увеличенный размер текста для меток */
   margin-bottom: 5px; /* Немного увеличиваем расстояние между метками и полями */
 }
@@ -93,7 +95,7 @@ export default {
 .submit-button:hover {
   background-color: #7e349d;
 }
-.prevPage {
+.prev-link {
   font-size: 22px;
   color: #fff;
   text-decoration: none;
@@ -107,7 +109,7 @@ export default {
   transition: background-color 0.3s ease;
   margin-left: 30%;
 }
-.prevPage:hover {
+.prev-link:hover {
   background-color: #7e349d;
 }
 </style>
