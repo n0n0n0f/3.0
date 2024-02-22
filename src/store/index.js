@@ -32,9 +32,16 @@ export default createStore({
       else{
         state.realCart.push(item);
       }
-      axios.post('https://jurapro.bhuser.ru/products', item)
-          .then(response => console.log(response))
-          .catch(error => console.error(error));
+      axios.post('https://jurapro.bhuser.ru/api-shop/cart/', item)
+          .then(response => {
+            console.log("Product added to cart:", response.data); // Вывод информации о товаре
+          })
+          .catch(error => {
+            console.error("Error adding product to cart:", error); // Вывод ошибки
+            if (error.response && error.response.status === 403) {
+              console.log("Forbidden error: You do not have permission to perform this action.");
+            }
+          });
     },
     removeFromCart(state, product){
       if(state.realCart.length > 0){

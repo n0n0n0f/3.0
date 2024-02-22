@@ -5,8 +5,10 @@
   <form @submit.prevent="store.commit('login')" class="login-form">
     <label class="label">Эл. почта:</label>
     <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
+    <span v-if="!isEmailValid" class="error-message">Некорректный адрес эл. почты</span>
     <label class="label">Пароль:</label>
     <input type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
+    <span v-if="!isPasswordValid" class="error-message">Пароль должен содержать минимум 6 символов</span>
     <input type="submit" value="Войти" class="submit-button">
   </form>
 </template>
@@ -64,7 +66,7 @@ export default {
 }
 
 .error {
-  border-color: red;
+  border-color: red; /* добавляем стиль для выделения неверных полей */
 }
 
 .error-message {
