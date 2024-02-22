@@ -2,7 +2,7 @@
   <div class="form-header">
     <router-link class="prevPage" to="/">Go Back</router-link>
   </div>
-  <form @submit.prevent="store.commit('userLogin')" class="login-form">
+  <form @submit.prevent="store.commit('loginFormUser')" class="login-form">
     <label class="label">Email:</label>
     <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
     <label class="label">Password:</label>

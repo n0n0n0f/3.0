@@ -15,7 +15,7 @@
         <p><strong>Price:</strong> {{ product.price * product.quantity }}</p>
       </div>
       <hr>
-      <p><strong>Total: {{ calculateTotalPrice(order) }}</strong></p>
+      <p><strong>Total: {{ fullPrice(order) }}</strong></p>
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    calculateTotalPrice(order) {
+    fullPrice(order) {
       let totalPrice = 0;
       for (let i = 0; i < order.length; i++) {
         totalPrice += order[i].price * order[i].quantity;
@@ -57,7 +57,7 @@ export default {
   border: 1px solid #8a2be2;
   border-radius: 8px;
   width: 80%;
-  padding: 20px;
+  padding: 20px 40px 20px 20px;
   margin-bottom: 40px;
   background-color: #e6e6fa;
 }

@@ -4,11 +4,11 @@
       <router-link class="back-link" to="/">Go Back</router-link>
     </div>
 
-    <div v-show="store.state.realCart.length === 0">
+    <div v-show="realCart.length === 0">
       <h2 class="empty-msg">Your cart is empty</h2>
     </div>
-    <div class="cart-items" v-show="store.state.realCart.length > 0">
-      <div class="item" v-for="(item, index) in store.state.realCart" :key="item.id">
+    <div class="cart-items" v-show="realCart.length > 0">
+      <div class="item" v-for="(item, index) in realCart" :key="item.id">
         <div class="item-details">
           <div class="item-info">
             <p class="item-title">{{ item.title }}</p>
@@ -16,31 +16,37 @@
             <p class="item-price">Price: <span class="price">{{ item.price }}</span></p>
           </div>
           <div class="quantity-actions">
-            <button @click="store.commit('removeFromCart', item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
+            <button @click="cartRemove(item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
             <p class="quantity">Quantity: <span class="quantity-value">{{ item.quantity }}</span></p>
-            <button @click="store.commit('addToCart', item)" class="quantity-button">+</button>
+            <button @click="addProductCart(item)" class="quantity-button">+</button>
           </div>
         </div>
-        <button class="delete-button" @click="store.commit('delFromCart', item)">Delete</button>
+        <button class="delete-button" @click="cartDelete(item)">Delete</button>
       </div>
     </div>
-    <router-link class="order-button" to="/order" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Place Order</router-link>
+    <router-link class="order-button" to="/order" v-show="realCart.length > 0" @click="arrangeOrder">Place Order</router-link>
   </div>
 </template>
 
 <script>
-import store from "@/store";
+import { mapState } from 'vuex';
 
 export default {
   computed: {
-    store() {
-      return store;
-    }
+    ...mapState(['realCart'])
   },
   methods: {
-    placeOrder() {
+    addProductCart(item) {
+      this.$store.commit('addProductCart', item);
+    },
+    cartRemove(item) {
+      this.$store.commit('removeFromCart', item);
+    },
+    cartDelete(item) {
+      this.$store.commit('deleteCart', item);
+    }, arrangeOrder() {
       console.log('Clicked to place order');
-      this.store.commit('createOrder');
+      this.$store.commit('newOrder');
     }
   }
 };

@@ -108,7 +108,7 @@ export default {
 }
 
 .prevPage {
-  font-size: 22px; /* Increased font size for buttons */
+  font-size: 22px;
   color: #fff;
   text-decoration: none;
   align-items: center;

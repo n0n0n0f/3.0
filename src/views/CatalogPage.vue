@@ -24,7 +24,7 @@
         <div class="product-price-container">
           <p class="product-price">{{ product.price }}</p>
         </div>
-        <button @click="store.commit('addToCart', product)" v-show="store.state.userToken !== null" class="add-to-cart">Add to Cart</button>
+        <button @click="store.commit('addProductCart', product)" v-show="store.state.userToken !== null" class="add-to-cart">Add to Cart</button>
       </div>
     </div>
   </div>
@@ -43,7 +43,7 @@ export default {
     if (localStorage.token !== undefined && localStorage.token !== null) {
       store.state.userToken = localStorage.token;
     }
-    this.$store.commit('fetchProducts');
+    this.$store.commit('productsGet');
   },
 };
 </script>

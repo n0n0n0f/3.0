@@ -17,7 +17,7 @@ export default createStore({
   getters: {
   },
   mutations: {
-    addToCart(state, product) {
+    addProductCart(state, product) {
       let item = product;
       item = {...item, quantity: 1};
       if(state.realCart.length > 0){
@@ -38,7 +38,7 @@ export default createStore({
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-    removeFromCart(state, product){
+    cartRemove(state, product){
       if(state.realCart.length > 0){
         let bool = state.realCart.some(i => i.id === product.id);
 
@@ -51,7 +51,7 @@ export default createStore({
 
       }
     },
-    async fetchProducts(state){
+    async productsGet(state){
       const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/products')
           .then(response => state.products = response.data)
           .catch(error =>{console.log(error)})
@@ -59,7 +59,7 @@ export default createStore({
 
       console.log(data);
     },
-    delFromCart(state, product) {
+    deleteCart(state, product) {
       let indexCart = state.realCart.indexOf(product);
       state.realCart.splice(indexCart, 1);
 
@@ -67,7 +67,7 @@ export default createStore({
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-    orderCreate(state, item) {
+    newOrder(state, item) {
       let newOrders = state.realCart.map(item => ({...item}));
       state.orders.push(newOrders);
       state.realCart.splice(0, state.realCart.length);
@@ -158,7 +158,7 @@ export default createStore({
 
   },
   actions: {
-    async login({ state, commit }, userInfo) {
+    async loginFormUser({ state, commit }, userInfo) {
       try {
         const response = await axios.post('https://jurapro.bhuser.ru/api-shop/login', userInfo);
 
