@@ -17,7 +17,7 @@ export default createStore({
   getters: {
   },
   mutations: {
-    addToCart(state, product){
+    addToCart(state, product) {
       let item = product;
       item = {...item, quantity: 1};
       if(state.realCart.length > 0){
@@ -33,6 +33,10 @@ export default createStore({
       else{
         state.realCart.push(item);
       }
+
+      axios.post('https://jurapro.bhuser.ru/products', item)
+          .then(response => console.log(response))
+          .catch(error => console.error(error));
     },
     removeFromCart(state, product){
       if(state.realCart.length > 0){
@@ -47,16 +51,6 @@ export default createStore({
 
       }
     },
-    delFromCart(state, product){
-      let indexCart = state.realCart.indexOf(product);
-      state.realCart.splice(indexCart, 1);
-    },
-    orderCreate(state){
-      let newOrders = state.realCart.map(item => ({...item}));
-      state.orders.push(newOrders);
-      state.realCart.splice(0, state.realCart.length);
-      console.log(state.orders);
-    },
     async fetchProducts(state){
       const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/products')
           .then(response => state.products = response.data)
@@ -64,6 +58,26 @@ export default createStore({
       state.products = data;
 
       console.log(data);
+    },
+    delFromCart(state, product) {
+      let indexCart = state.realCart.indexOf(product);
+      state.realCart.splice(indexCart, 1);
+
+      // Отправка запроса к API
+      axios.delete(`http://localhost:8080/api/cart/${product.id}`)
+          .then(response => console.log(response))
+          .catch(error => console.error(error));
+    },
+    orderCreate(state) {
+      let newOrders = state.realCart.map(item => ({...item}));
+      state.orders.push(newOrders);
+      state.realCart.splice(0, state.realCart.length);
+      console.log(state.orders);
+      // Отправка запроса к API
+      axios.post('http://localhost:8080/api/orders', newOrders) // Замените URL на соответствующий
+          .then(response => console.log(response))
+
+          .catch(error => console.error(error));
     },
     async login(state){
 
