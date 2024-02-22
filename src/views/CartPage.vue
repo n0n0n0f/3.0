@@ -40,7 +40,7 @@ export default {
       this.$store.commit('addProductCart', item);
     },
     cartRemove(item) {
-      this.$store.commit('removeFromCart', item);
+      this.$store.commit('cartRemove', item);
     },
     cartDelete(item) {
       this.$store.commit('deleteCart', item);
