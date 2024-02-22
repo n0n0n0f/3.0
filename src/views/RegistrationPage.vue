@@ -1,33 +1,31 @@
 <template>
   <div class="form-container">
     <div class="form-header">
-      <router-link class="prevPage" to="/">Go Back</router-link>
+      <router-link class="prevPage" to="/">Назад</router-link>
     </div>
-    <form @submit.prevent="store.commit('userRegistration')" class="registration-form">
-      <label for="fullName" class="label">Full Name:</label>
-      <input id="fullName" type="text" required v-model="store.state.fullName" :class="{ 'input-field': true, 'error': !isFullNameValid }">
-      <p v-if="!isFullNameValid" class="error-message">Enter a valid Full Name</p>
-      <label for="email" class="label">Email:</label>
+    <form @submit.prevent="store.commit('registration')" class="registration-form">
+      <label for="fio" class="label">ФИО:</label>
+      <input id="fio" type="text" required v-model="store.state.fio" :class="{ 'input-field': true, 'error': !isFioValid }">
+      <p v-if="!isFioValid" class="error-message">Введите корректное ФИО</p>
+      <label for="email" class="label">Эл. почта:</label>
       <input id="email" type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
-      <p v-if="!isEmailValid" class="error-message">Enter a valid email address</p>
-      <label for="password" class="label">Password:</label>
+      <p v-if="!isEmailValid" class="error-message">Введите корректный адрес электронной почты</p>
+      <label for="password" class="label">Пароль:</label>
       <input id="password" type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
-      <p v-if="!isPasswordValid" class="error-message">Password must be at least 6 characters</p>
-      <input type="submit" value="Sign Up" class="submit-button">
+      <p v-if="!isPasswordValid" class="error-message">Пароль должен содержать не менее 6 символов</p>
+      <input type="submit" value="Регистрация" class="submit-button">
     </form>
   </div>
 </template>
-
 <script>
 import store from "@/store";
-
 export default {
   computed: {
     store() {
       return store
     },
-    isFullNameValid() {
-      return this.store.state.fullName.trim() !== '';
+    isFioValid() {
+      return this.store.state.fio.trim() !== '';
     },
     isEmailValid() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,7 +37,6 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .form-container {
   max-width: 400px;
@@ -49,21 +46,17 @@ export default {
   background-color: #f7f7f7;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .form-header {
   margin-bottom: 20px;
 }
-
 .registration-form {
   display: flex;
   flex-direction: column;
 }
-
 .label {
-  font-size: 22px; /* Increased font size for labels */
-  margin-bottom: 5px; /* Increased spacing between labels and fields */
+  font-size: 22px; /* Увеличенный размер текста для меток */
+  margin-bottom: 5px; /* Немного увеличиваем расстояние между метками и полями */
 }
-
 .input-field {
   font-size: 20px;
   height: 45px;
@@ -74,24 +67,19 @@ export default {
   transition: border-color 0.3s ease;
   background-color: #e6e6fa;
 }
-
 .input-field:hover {
   background-color: #d8bfd8;
 }
-
 .input-field:focus {
   border-color: #8a2be2;
 }
-
 .error {
   border-color: red;
 }
-
 .error-message {
   color: red;
   margin-top: -10px;
 }
-
 .submit-button {
   cursor: pointer;
   color: #fff;
@@ -99,14 +87,12 @@ export default {
   border-radius: 5px;
   background-color: #8a2be2;
   padding: 12px 20px;
-  font-size: 22px; /* Increased font size for buttons */
+  font-size: 22px; /* Увеличенный размер текста для кнопки */
   transition: background-color 0.3s ease;
 }
-
 .submit-button:hover {
   background-color: #7e349d;
 }
-
 .prevPage {
   font-size: 22px;
   color: #fff;
@@ -121,7 +107,6 @@ export default {
   transition: background-color 0.3s ease;
   margin-left: 30%;
 }
-
 .prevPage:hover {
   background-color: #7e349d;
 }

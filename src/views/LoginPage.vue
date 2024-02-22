@@ -1,19 +1,17 @@
 <template>
   <div class="form-header">
-    <router-link class="prevPage" to="/">Go Back</router-link>
+    <router-link class="prevPage" to="/">Назад</router-link>
   </div>
-  <form @submit.prevent="store.commit('loginFormUser')" class="login-form">
-    <label class="label">Email:</label>
+  <form @submit.prevent="store.commit('login')" class="login-form">
+    <label class="label">Эл. почта:</label>
     <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
-    <label class="label">Password:</label>
+    <label class="label">Пароль:</label>
     <input type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
-    <input type="submit" value="Login" class="submit-button">
+    <input type="submit" value="Войти" class="submit-button">
   </form>
 </template>
-
 <script>
 import store from "@/store";
-
 export default {
   computed: {
     store() {

@@ -1,57 +1,47 @@
 <template>
   <div class="shopping-cart">
     <div class="cart-header">
-      <router-link class="back-link" to="/">Go Back</router-link>
+      <router-link class="back-link" to="/">Вернуться назад</router-link>
     </div>
-
-    <div v-show="cartProduct.length === 0">
-      <h2 class="empty-msg">Your cart is empty</h2>
+    <div v-show="store.state.realCart.length === 0">
+      <h2 class="empty-msg">Корзина пуста</h2>
     </div>
-    <div class="cart-items" v-show="cartProduct.length > 0">
-      <div class="item" v-for="(item, index) in cartProduct" :key="item.id">
+    <div class="cart-items" v-show="store.state.realCart.length > 0">
+      <div class="item" v-for="(item, index) in store.state.realCart" :key="item.id">
         <div class="item-details">
           <div class="item-info">
-            <p class="item-title">{{ item.title }}</p>
+            <p class="item-title">{{ item.name }}</p>
             <p class="item-description">{{ item.description }}</p>
-            <p class="item-price">Price: <span class="price">{{ item.price }}</span></p>
+            <p class="item-price">Цена: <span class="price">{{ item.price }}</span></p>
           </div>
           <div class="quantity-actions">
-            <button @click="cartRemove(item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
-            <p class="quantity">Quantity: <span class="quantity-value">{{ item.quantity }}</span></p>
-            <button @click="addProductCart(item)" class="quantity-button">+</button>
+            <button @click="store.commit('removeFromCart', item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
+            <p class="quantity">Количество: <span class="quantity-value">{{ item.quantity }}</span></p>
+            <button @click="store.commit('addToCart', item)" class="quantity-button">+</button>
           </div>
         </div>
-        <button class="delete-button" @click="cartDelete(item)">Delete</button>
+        <button class="delete-button" @click="store.commit('delFromCart', item)">Удалить</button>
       </div>
     </div>
-    <router-link class="order-button" to="/order" v-show="cartProduct.length > 0" @click="arrangeOrder">Place Order</router-link>
+    <router-link to="/order" class="order-button" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
   </div>
 </template>
-
 <script>
-import { mapState } from 'vuex';
-
+import store from "@/store";
 export default {
   computed: {
-    ...mapState(['cartProduct'])
+    store() {
+      return store;
+    }
   },
   methods: {
-    addProductCart(item) {
-      this.$store.commit('addProductCart', item);
-    },
-    cartRemove(item) {
-      this.$store.commit('cartRemove', item);
-    },
-    cartDelete(item) {
-      this.$store.commit('deleteCart', item);
-    }, arrangeOrder() {
+    placeOrder() {
       console.log('Clicked to place order');
-      this.$store.commit('newOrder');
+      this.store.commit('createOrder');
     }
   }
 };
 </script>
-
 <style scoped>
 .shopping-cart {
   max-width: 1200px;

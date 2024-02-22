@@ -1,10 +1,9 @@
 import index, { createStore } from 'vuex'
 import axios from "axios";
-
 export default createStore({
   state: {
     products: [],
-    cartProduct: [],
+    realCart: [],
     orders: [],
     fio: '',
     email: '',
@@ -17,76 +16,69 @@ export default createStore({
   getters: {
   },
   mutations: {
-    addProductCart(state, product) {
+    addToCart(state, product) {
       let item = product;
       item = {...item, quantity: 1};
-      if(state.cartProduct.length > 0){
-        let bool = state.cartProduct.some(i => i.id === item.id);
+      if(state.realCart.length > 0){
+        let bool = state.realCart.some(i => i.id === item.id);
         if(bool){
-          let itemIndex = state.cartProduct.findIndex(el => el.id === item.id);
-          state.cartProduct[itemIndex]['quantity'] += 1;
+          let itemIndex = state.realCart.findIndex(el => el.id === item.id);
+          state.realCart[itemIndex]['quantity'] += 1;
         }
         else{
-          state.cartProduct.push(item);
+          state.realCart.push(item);
         }
       }
       else{
-        state.cartProduct.push(item);
+        state.realCart.push(item);
       }
-
       axios.post('https://jurapro.bhuser.ru/products', item)
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-    cartRemove(state, product){
-      if(state.cartProduct.length > 0){
-        let bool = state.cartProduct.some(i => i.id === product.id);
-
+    removeFromCart(state, product){
+      if(state.realCart.length > 0){
+        let bool = state.realCart.some(i => i.id === product.id);
         if(bool){
-          let index = state.cartProduct.findIndex(el => el.id === product.id);
-          if(state.cartProduct[index]['quantity'] !== 0){
-            state.cartProduct[index]['quantity'] -= 1;
+          let index = state.realCart.findIndex(el => el.id === product.id);
+          if(state.realCart[index]['quantity'] !== 0){
+            state.realCart[index]['quantity'] -= 1;
           }
         }
-
       }
     },
-    async productsGet(state){
+    async fetchProducts(state){
       const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/products')
           .then(response => state.products = response.data)
           .catch(error =>{console.log(error)})
       state.products = data;
-
       console.log(data);
     },
-    deleteCart(state, product) {
-      let indexCart = state.cartProduct.indexOf(product);
-      state.cartProduct.splice(indexCart, 1);
+    delFromCart(state, product) {
+      let indexCart = state.realCart.indexOf(product);
+      state.realCart.splice(indexCart, 1);
 
+      // Отправка запроса к API
       axios.delete(`http://localhost:8080/api/cart/${product.id}`)
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-    newOrder(state, item) {
-      let newOrders = state.cartProduct.map(item => ({...item}));
+    orderCreate(state) {
+      let newOrders = state.realCart.map(item => ({...item}));
       state.orders.push(newOrders);
-      state.cartProduct.splice(0, state.cartProduct.length);
+      state.realCart.splice(0, state.realCart.length);
       console.log(state.orders);
-      // Отправка запроса к API
-      axios.post('https://jurapro.bhuser.ru/api-shop/order', item)
-          .then(response => {
-            console.log("Product added to cart:", response.data);
-          })
+
+      axios.post('https://jurapro.bhuser.ru/api-shop/order', newOrders)
+          .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-
     async login(state){
 
       let userInfo = {
         email: state.email,
         password: state.password
       }
-
       const data = await axios.post('https://jurapro.bhuser.ru/api-shop/login', userInfo)
           .then(function(response) {
             state.user_token = response.data.data.user_token;
@@ -94,19 +86,16 @@ export default createStore({
           })
           .catch(error =>{console.log(error)})
       console.log(data);
-
       if(localStorage.token !== undefined && localStorage.token !== null){
         window.location.href = "/";
       }
     },
     async registration(state){
-
       let userInfo = {
         fio: state.fio,
         email: state.email,
         password: state.password
       }
-
       const data = await axios.post('https://jurapro.bhuser.ru/api-shop/signup', userInfo)
           .then(function (response) {
             console.log(response);
@@ -115,7 +104,6 @@ export default createStore({
           })
           .catch(error =>{console.log(error)})
       console.log(data)
-
       if(localStorage.token !== undefined && localStorage.token !== null){
         window.location.href = "/login";
       }
@@ -154,14 +142,11 @@ export default createStore({
       state.signupError = errorMessage;
       console.error("Signup Error:", errorMessage);
     },
-
-
   },
   actions: {
-    async loginFormUser({ state, commit }, userInfo) {
+    async loginUser({ state, commit }, userInfo) {
       try {
         const response = await axios.post('https://jurapro.bhuser.ru/api-shop/login', userInfo);
-
         if (response.status === 200) {
           commit('loginSuccess', response.data.data.user_token);
         }
@@ -179,7 +164,6 @@ export default createStore({
     async signup({ state, commit }, userInfo) {
       try {
         const response = await axios.post('https://jurapro.bhuser.ru/api-shop/signup', userInfo);
-
         if (response.status === 201) {
           commit('signupSuccess', response.data.data.user_token);
         }
