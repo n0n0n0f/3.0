@@ -1,21 +1,21 @@
 <template>
   <div class="orders">
-    <h2>Ваши заказы:</h2>
+    <h2>Your Orders:</h2>
     <div class="order-header">
-      <router-link class="prevPage" to="/">Вернуться</router-link>
+      <router-link class="prevPage" to="/">Go Back</router-link>
     </div>
     <div v-show="store.state.orders.length === 0">
-      <h2 class="msg">На данный момент у вас нет заказов.</h2>
+      <h2 class="msg">You have no orders at the moment.</h2>
     </div>
     <div class="order" v-for="order in store.state.orders" :key="order.id">
       <div class="product" v-for="product in order" :key="product.id">
-        <p><strong>{{ product.name }}</strong></p>
-        <p><strong>Описание:</strong> {{ product.description }}</p>
-        <p><strong>Количество:</strong> {{ product.quantity }}</p>
-        <p><strong>Цена:</strong> {{ product.price * product.quantity }}</p>
+        <p><strong>{{ product.title }}</strong></p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+        <p><strong>Price:</strong> {{ product.price * product.quantity }}</p>
       </div>
       <hr>
-      <p><strong>Итого: {{ calculateTotalPrice(order) }}</strong></p>
+      <p><strong>Total: {{ calculateTotalPrice(order) }}</strong></p>
     </div>
   </div>
 </template>

@@ -1,30 +1,30 @@
 <template>
   <div class="shopping-cart">
     <div class="cart-header">
-      <router-link class="back-link" to="/">Вернуться назад</router-link>
+      <router-link class="back-link" to="/">Go Back</router-link>
     </div>
 
     <div v-show="store.state.realCart.length === 0">
-      <h2 class="empty-msg">Корзина пуста</h2>
+      <h2 class="empty-msg">Your cart is empty</h2>
     </div>
     <div class="cart-items" v-show="store.state.realCart.length > 0">
       <div class="item" v-for="(item, index) in store.state.realCart" :key="item.id">
         <div class="item-details">
           <div class="item-info">
-            <p class="item-title">{{ item.name }}</p>
+            <p class="item-title">{{ item.title }}</p>
             <p class="item-description">{{ item.description }}</p>
-            <p class="item-price">Цена: <span class="price">{{ item.price }}</span></p>
+            <p class="item-price">Price: <span class="price">{{ item.price }}</span></p>
           </div>
           <div class="quantity-actions">
             <button @click="store.commit('removeFromCart', item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
-            <p class="quantity">Количество: <span class="quantity-value">{{ item.quantity }}</span></p>
+            <p class="quantity">Quantity: <span class="quantity-value">{{ item.quantity }}</span></p>
             <button @click="store.commit('addToCart', item)" class="quantity-button">+</button>
           </div>
         </div>
-        <button class="delete-button" @click="store.commit('delFromCart', item)">Удалить</button>
+        <button class="delete-button" @click="store.commit('delFromCart', item)">Delete</button>
       </div>
     </div>
-    <router-link class="order-button" to="/order" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
+    <router-link class="order-button" to="/order" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Place Order</router-link>
   </div>
 </template>
 

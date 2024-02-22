@@ -1,13 +1,13 @@
 <template>
   <div class="form-header">
-    <router-link class="prevPage" to="/">Назад</router-link>
+    <router-link class="prevPage" to="/">Go Back</router-link>
   </div>
-  <form @submit.prevent="store.commit('login')" class="login-form">
-    <label class="label">Эл. почта:</label>
+  <form @submit.prevent="store.commit('userLogin')" class="login-form">
+    <label class="label">Email:</label>
     <input type="email" required v-model="store.state.email" :class="{ 'input-field': true, 'error': !isEmailValid }">
-    <label class="label">Пароль:</label>
+    <label class="label">Password:</label>
     <input type="password" required v-model="store.state.password" :class="{ 'input-field': true, 'error': !isPasswordValid }">
-    <input type="submit" value="Войти" class="submit-button">
+    <input type="submit" value="Login" class="submit-button">
   </form>
 </template>
 
@@ -95,7 +95,7 @@ export default {
   text-decoration: none;
   align-items: center;
   justify-content: center;
-  background-color:#8a2be2;
+  background-color: #8a2be2;
   display: flex;
   width: 160px;
   height: 50px;
