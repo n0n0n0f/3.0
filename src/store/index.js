@@ -4,7 +4,7 @@ import axios from "axios";
 export default createStore({
   state: {
     products: [],
-    realCart: [],
+    cartProduct: [],
     orders: [],
     fio: '',
     email: '',
@@ -20,18 +20,18 @@ export default createStore({
     addProductCart(state, product) {
       let item = product;
       item = {...item, quantity: 1};
-      if(state.realCart.length > 0){
-        let bool = state.realCart.some(i => i.id === item.id);
+      if(state.cartProduct.length > 0){
+        let bool = state.cartProduct.some(i => i.id === item.id);
         if(bool){
-          let itemIndex = state.realCart.findIndex(el => el.id === item.id);
-          state.realCart[itemIndex]['quantity'] += 1;
+          let itemIndex = state.cartProduct.findIndex(el => el.id === item.id);
+          state.cartProduct[itemIndex]['quantity'] += 1;
         }
         else{
-          state.realCart.push(item);
+          state.cartProduct.push(item);
         }
       }
       else{
-        state.realCart.push(item);
+        state.cartProduct.push(item);
       }
 
       axios.post('https://jurapro.bhuser.ru/products', item)
@@ -39,13 +39,13 @@ export default createStore({
           .catch(error => console.error(error));
     },
     cartRemove(state, product){
-      if(state.realCart.length > 0){
-        let bool = state.realCart.some(i => i.id === product.id);
+      if(state.cartProduct.length > 0){
+        let bool = state.cartProduct.some(i => i.id === product.id);
 
         if(bool){
-          let index = state.realCart.findIndex(el => el.id === product.id);
-          if(state.realCart[index]['quantity'] !== 0){
-            state.realCart[index]['quantity'] -= 1;
+          let index = state.cartProduct.findIndex(el => el.id === product.id);
+          if(state.cartProduct[index]['quantity'] !== 0){
+            state.cartProduct[index]['quantity'] -= 1;
           }
         }
 
@@ -60,17 +60,17 @@ export default createStore({
       console.log(data);
     },
     deleteCart(state, product) {
-      let indexCart = state.realCart.indexOf(product);
-      state.realCart.splice(indexCart, 1);
+      let indexCart = state.cartProduct.indexOf(product);
+      state.cartProduct.splice(indexCart, 1);
 
       axios.delete(`http://localhost:8080/api/cart/${product.id}`)
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
     newOrder(state, item) {
-      let newOrders = state.realCart.map(item => ({...item}));
+      let newOrders = state.cartProduct.map(item => ({...item}));
       state.orders.push(newOrders);
-      state.realCart.splice(0, state.realCart.length);
+      state.cartProduct.splice(0, state.cartProduct.length);
       console.log(state.orders);
       // Отправка запроса к API
       axios.post('https://jurapro.bhuser.ru/api-shop/order', item)

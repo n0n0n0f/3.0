@@ -4,11 +4,11 @@
       <router-link class="back-link" to="/">Go Back</router-link>
     </div>
 
-    <div v-show="realCart.length === 0">
+    <div v-show="cartProduct.length === 0">
       <h2 class="empty-msg">Your cart is empty</h2>
     </div>
-    <div class="cart-items" v-show="realCart.length > 0">
-      <div class="item" v-for="(item, index) in realCart" :key="item.id">
+    <div class="cart-items" v-show="cartProduct.length > 0">
+      <div class="item" v-for="(item, index) in cartProduct" :key="item.id">
         <div class="item-details">
           <div class="item-info">
             <p class="item-title">{{ item.title }}</p>
@@ -24,7 +24,7 @@
         <button class="delete-button" @click="cartDelete(item)">Delete</button>
       </div>
     </div>
-    <router-link class="order-button" to="/order" v-show="realCart.length > 0" @click="arrangeOrder">Place Order</router-link>
+    <router-link class="order-button" to="/order" v-show="cartProduct.length > 0" @click="arrangeOrder">Place Order</router-link>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ import { mapState } from 'vuex';
 
 export default {
   computed: {
-    ...mapState(['realCart'])
+    ...mapState(['cartProduct'])
   },
   methods: {
     addProductCart(item) {
