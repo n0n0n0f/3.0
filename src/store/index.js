@@ -67,7 +67,7 @@ export default createStore({
           .then(response => console.log(response))
           .catch(error => console.error(error));
     },
-    orderCreate(state) {
+    orderCreate(state, item) {
       let newOrders = state.realCart.map(item => ({...item}));
       state.orders.push(newOrders);
       state.realCart.splice(0, state.realCart.length);
@@ -78,8 +78,8 @@ export default createStore({
             console.log("Product added to cart:", response.data);
           })
           .catch(error => console.error(error));
-
     },
+
     async login(state){
 
       let userInfo = {

@@ -24,7 +24,7 @@
         <button class="delete-button" @click="store.commit('delFromCart', item)">Удалить</button>
       </div>
     </div>
-    <router-link to="/order" class="order-button" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
+    <router-link class="order-button" to="/order" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
   </div>
 </template>
 
