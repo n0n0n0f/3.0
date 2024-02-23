@@ -3,7 +3,7 @@
     <div class="cart-header">
       <router-link class="back-link" to="/">Вернуться назад</router-link>
     </div>
-    <div v-show="store.state.cartList.length === 0">
+    <div v-if="store.state.cartList.length === 0">
       <h2 class="empty-msg">Корзина пуста</h2>
     </div>
     <div class="cart-items-container" v-if="store.state.cartList.length > 0">
@@ -20,22 +20,21 @@
             <button class="quantity-button" @click="cartPlus(item)">+</button>
           </div>
         </div>
-        <button class="delete-button " @click="removeCart(item.id)">Удалить из корзины</button>
+        <button class="delete-button" @click="removeCart(item.id)">Удалить из корзины</button>
       </div>
+      <button class="order-button" @click="arrangeOrder">
+        Оформить заказ
+      </button>
     </div>
-    <button class="order-button" @click="arrangeOrder" :disabled="store.state.cartList.length === 0">
-      Оформить заказ
-    </button>
   </div>
 </template>
-
 <script>
-import store from "@/store";
+import store from "@/store"; // Импорт Vuex
 
 export default {
   computed: {
     store() {
-      return store
+      return store;
     }
   },
   created() {
@@ -49,15 +48,33 @@ export default {
       this.$store.commit('arrangeOrder');
     },
     cartMinus(item) {
-      if (item.quantity > 1) {
-        const newQuantity = item.quantity - 1;
-        this.$store.commit('cartMinusPlus', { productId: item.id, newQuantity });
+      if (item && typeof item.quantity !== 'undefined' && !isNaN(item.quantity)) {
+        if (item.quantity > 1) {
+          const newQuantity = item.quantity - 1;
+          console.log('Уменьшаем количество продукта:', item);
+          this.updateCartQuantity(item.id, newQuantity);
+        }
+      } else {
+        const newQuantity = 1;
+        console.log('Инициализируем количество продукта:', item);
+        this.updateCartQuantity(item.id, newQuantity);
       }
     },
     cartPlus(item) {
-      const newQuantity = item.quantity + 1;
-      this.$store.commit('cartMinusPlus', { productId: item.id, newQuantity });
+      if (item && typeof item.quantity !== 'undefined' && !isNaN(item.quantity)) {
+        const newQuantity = item.quantity + 1;
+        console.log('Увеличиваем количество продукта:', item);
+        this.updateCartQuantity(item.id, newQuantity);
+      } else {
+        const newQuantity = 1;
+        console.log('Инициализируем количество продукта:', item);
+        this.updateCartQuantity(item.id, newQuantity);
+      }
     },
+
+    updateCartQuantity(productId, newQuantity) {
+      this.$store.commit('cartMinusPlus', { productId, newQuantity });
+    }
   }
 }
 </script>

@@ -1,5 +1,6 @@
 import index, { createStore } from 'vuex'
 import axios from "axios";
+
 export default createStore({
     state: {
         fio: '',
@@ -74,7 +75,8 @@ export default createStore({
                 });
             state.user_token = null;
             localStorage.clear();
-        },
+            state.cartList = [];
+    },
         productCartAdd(state, product) {
             const token = state.user_token;
             if (token) {
@@ -139,7 +141,7 @@ export default createStore({
             }
         },
         cartMinusPlus(state, { productId, newQuantity }) {
-            const productToUpdate = state.cartList.find((product) => product.id === productId);
+            const productToUpdate = state.cartList.find(product => product.id === productId);
             if (productToUpdate) {
                 productToUpdate.quantity = newQuantity;
             }
@@ -160,8 +162,7 @@ export default createStore({
                     );
                     if (response.status === 201) {
                         state.orderList.unshift(response.data.data);
-                        localStorage.setItem('userOrders', JSON.stringify(state.orderList));
-                        state.cartList = [];
+                        state.cartList = []; // Очистить корзину в состоянии Vuex
                         console.log({ data: { order_id: response.data.data.id, message: 'Order is processed' } });
                     }
                 } catch (error) {
@@ -175,8 +176,15 @@ export default createStore({
                 console.log('User is not authenticated');
             }
         },
+
         setOrders(state, orders) {
             state.orderList = orders;
+        },
+        updateCartQuantity(state, { productId, newQuantity }) {
+            const productToUpdate = state.cartList.find(product => product.id === productId);
+            if (productToUpdate) {
+                productToUpdate.quantity = newQuantity;
+            }
         },
     },
     actions: {

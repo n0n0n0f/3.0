@@ -8,7 +8,7 @@
         <router-link to="/login">Войти в аккаунт</router-link>
       </p>
       <p v-show="store.state.user_token !== null" class="nav-item">
-        <router-link to="/cart">Корзина</router-link>
+        <router-link to="/cart">Корзина<span v-if="cartItemCount !== 0"> ({{ cartItemCount }})</span></router-link>
       </p>
       <p v-show="store.state.user_token !== null" class="nav-item">
         <router-link to="/order">Оформленные заказы</router-link>
@@ -36,6 +36,9 @@ export default {
   computed: {
     store() {
       return store
+    },
+    cartItemCount() {
+      return store.state.cartList.length;
     }
   },
   methods:{
