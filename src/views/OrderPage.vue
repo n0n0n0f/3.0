@@ -4,59 +4,73 @@
     <div class="order-header">
       <router-link class="prev-link" to="/">Go Back</router-link>
     </div>
-    <div v-show="orderList.length === 0">
+    <div v-show="store.state.orderList.length === 0">
       <h2 class="no-orders-msg">You have no orders at the moment.</h2>
     </div>
-    <div class="order" v-for="order in orderList" :key="order.id">
+    <div class="order" v-for="order in store.state.orderList" :key="order.id">
       <ul>
-        <li v-for="product in order.products" :key="product.id">
-         <h1> {{ getProductName(product.id) }} </h1><!-- Используйте product.id для получения имени продукта -->
-          {{ product.quantity }} <!-- Отображаем количество продукта -->
+        <li class="product" v-for="productId in order.products" :key="productId">
+          <p><strong>{{ store.state.orderList(productId) }}</strong></p>
+          <p><strong>Description:</strong> {{ getProductDescription(productId) }}</p>
+          <p><strong>Quantity:</strong> {{ getProductQuantity(productId) }}</p>
+          <p><strong>Price:</strong> {{ getProductPrice(productId) }}</p>
         </li>
       </ul>
       <hr>
       <p><strong>Total: {{ fullPrice(order) }}</strong></p>
     </div>
   </div>
-</template><script>
-import { mapState } from "vuex";
+</template>
+
+<script>
+import store from "@/store";
 import axios from "axios";
 
 export default {
   computed: {
-    ...mapState(["orderList", "user_token"]),
-  },
-  created() {
-    this.$store.dispatch("orderIn");
+    store() {
+      return store;
+    }
   },
   methods: {
-    async getProductName(productId) {
+    async getProductTitle(productId) {
+      const product = await this.getProduct(productId);
+      return product.title || 'Product Title Unavailable';
+    },
+    async getProductDescription(productId) {
+      const product = await this.getProduct(productId);
+      return product.description || 'Product Description Unavailable';
+    },
+    async getProductQuantity(productId) {
+      const product = await this.getProduct(productId);
+      return product.quantity || 0;
+    },
+    async getProductPrice(productId) {
+      const product = await this.getProduct(productId);
+      return product.price || 0;
+    },
+    async getProduct(productId) {
+      const token = this.store.state.user_token;
       try {
-        const response = await axios.get(
-            `https://jurapro.bhuser.ru/api-shop/products/${productId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${this.user_token}`,
-              },
-            }
-        );
-        return response.data.data.name;
+        const response = await axios.get(`https://jurapro.bhuser.ru/api-shop/products/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        return response.data.data;
       } catch (error) {
         console.log(error);
-        return "Product Name Unavailable"; // Provide a default name or handle the error gracefully
+        return {}; // Return empty object in case of error
       }
     },
     fullPrice(order) {
       if (!order || !order.products) {
         return 0;
       }
-      return order.products.reduce(
-          (total, product) => total + product.price * product.quantity,
-          0
-      );
+      return order.products.reduce((total, product) => total + product.price * product.quantity, 0);
     },
   },
-};
+}
 </script>
 
 <style scoped>
