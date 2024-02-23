@@ -9,8 +9,9 @@
     </div>
     <div class="order" v-for="order in orderList" :key="order.id">
       <ul>
-        <li v-for="productId in order.products" :key="productId">
-          {{ getProductName(productId) }}
+        <li v-for="product in order.products" :key="product.id">
+         <h1> {{ getProductName(product.id) }} </h1><!-- Используйте product.id для получения имени продукта -->
+          {{ product.quantity }} <!-- Отображаем количество продукта -->
         </li>
       </ul>
       <hr>

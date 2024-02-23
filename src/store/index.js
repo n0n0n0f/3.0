@@ -161,8 +161,11 @@ export default createStore({
                         }
                     );
                     if (response.status === 201) {
+                        // Добавляем заказ в начало списка заказов
                         state.orderList.unshift(response.data.data);
-                        state.cartList = []; // Очистить корзину в состоянии Vuex
+                        state.cartList = []; // Очищаем корзину
+                        // Сохраняем обновленный список заказов в локальное хранилище
+                        localStorage.setItem('userOrders', JSON.stringify(state.orderList));
                         console.log({ data: { order_id: response.data.data.id, message: 'Order is processed' } });
                     }
                 } catch (error) {
@@ -176,9 +179,10 @@ export default createStore({
                 console.log('User is not authenticated');
             }
         },
-
         setOrders(state, orders) {
             state.orderList = orders;
+            // Сохраняем список заказов в локальное хранилище
+            localStorage.setItem('userOrders', JSON.stringify(orders));
         },
         updateCartQuantity(state, { productId, newQuantity }) {
             const productToUpdate = state.cartList.find(product => product.id === productId);
