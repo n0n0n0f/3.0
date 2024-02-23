@@ -51,26 +51,27 @@ export default {
       if (item && typeof item.quantity !== 'undefined' && !isNaN(item.quantity)) {
         if (item.quantity > 1) {
           const newQuantity = item.quantity - 1;
-          console.log('Уменьшаем количество продукта:', item);
+          console.log({ data: { message: 'Item quantity decreased' } });
           this.updateCartQuantity(item.id, newQuantity);
         }
       } else {
         const newQuantity = 1;
-        console.log('Инициализируем количество продукта:', item);
+        console.log('Инициализируем количество продукта:', { data: { message: 'Item quantity initialized' } });
         this.updateCartQuantity(item.id, newQuantity);
       }
     },
     cartPlus(item) {
       if (item && typeof item.quantity !== 'undefined' && !isNaN(item.quantity)) {
         const newQuantity = item.quantity + 1;
-        console.log('Увеличиваем количество продукта:', item);
+        console.log({ data: { message: 'Item quantity increased' } });
         this.updateCartQuantity(item.id, newQuantity);
       } else {
         const newQuantity = 1;
-        console.log('Инициализируем количество продукта:', item);
+        console.log({ data: { message: 'Item quantity initialized' } });
         this.updateCartQuantity(item.id, newQuantity);
       }
     },
+
 
     updateCartQuantity(productId, newQuantity) {
       this.$store.commit('cartMinusPlus', { productId, newQuantity });
