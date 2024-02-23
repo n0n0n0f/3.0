@@ -4,41 +4,58 @@
     <div class="order-header">
       <router-link class="prev-link" to="/">Go Back</router-link>
     </div>
-    <div v-show="store.state.orders.length === 0">
+    <div v-show="orderList.length === 0">
       <h2 class="no-orders-msg">You have no orders at the moment.</h2>
     </div>
-    <div class="order" v-for="order in store.state.orders" :key="order.id">
-      <div class="product" v-for="product in order" :key="product.id">
-        <p><strong>{{ product.title }}</strong></p>
-        <p><strong>Description:</strong> {{ product.description }}</p>
-        <p><strong>Quantity:</strong> {{ product.quantity }}</p>
-        <p><strong>Price:</strong> {{ product.price * product.quantity }}</p>
-      </div>
+    <div class="order" v-for="order in orderList" :key="order.id">
+      <ul>
+        <li v-for="productId in order.products" :key="productId">
+          {{ getProductName(productId) }}
+        </li>
+      </ul>
       <hr>
-      <p><strong>Total: {{ calculateTotalPrice(order) }}</strong></p>
+      <p><strong>Total: {{ fullPrice(order) }}</strong></p>
     </div>
   </div>
-</template>
-
-<script>
-import store from "@/store";
+</template><script>
+import { mapState } from "vuex";
+import axios from "axios";
 
 export default {
   computed: {
-    store() {
-      return store;
-    }
+    ...mapState(["orderList", "user_token"]),
+  },
+  created() {
+    this.$store.dispatch("orderIn");
   },
   methods: {
-    calculateTotalPrice(order) {
-      let totalPrice = 0;
-      for (let i = 0; i < order.length; i++) {
-        totalPrice += order[i].price * order[i].quantity;
+    async getProductName(productId) {
+      try {
+        const response = await axios.get(
+            `https://jurapro.bhuser.ru/api-shop/products/${productId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.user_token}`,
+              },
+            }
+        );
+        return response.data.data.name;
+      } catch (error) {
+        console.log(error);
+        return "Product Name Unavailable"; // Provide a default name or handle the error gracefully
       }
-      return totalPrice;
-    }
-  }
-}
+    },
+    fullPrice(order) {
+      if (!order || !order.products) {
+        return 0;
+      }
+      return order.products.reduce(
+          (total, product) => total + product.price * product.quantity,
+          0
+      );
+    },
+  },
+};
 </script>
 
 <style scoped>

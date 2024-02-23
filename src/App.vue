@@ -1,5 +1,8 @@
 <template>
-  <router-view/>
+  <router-view :cart="cart" @update:cart="cart = $event" />
+  <router-view v-slot="{ CartPage }">
+    <component :is="CartPage" v-if="CartPage" />
+  </router-view>
 </template>
 
 <script>

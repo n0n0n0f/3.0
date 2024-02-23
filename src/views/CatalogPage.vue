@@ -18,13 +18,13 @@
       </p>
     </nav>
     <div class="product-list">
-      <div class="product" v-for="(product, index) in store.state.products" :key="product.id">
-        <h3>{{ product.name }}</h3>
-        <p><strong>Описание:</strong> {{ product.description }}</p>
+      <div class="product" v-for="item in this.store.state.products">
+        <h3>{{ item.name }}</h3>
+        <p><strong>Описание:</strong> {{ item.description }}</p>
         <div class="product-price-container">
-          <p class="product-price">{{ product.price }}</p>
+          <p class="product-price">{{ item.price }} руб</p>
         </div>
-        <button @click="store.commit('addToCart', product)" v-show="store.state.user_token !== null" class="add-to-cart">Добавить в корзину</button>
+        <button class="add-to-cart" @click="addToCart(item)">В корзину</button>
       </div>
     </div>
   </div>
@@ -32,21 +32,26 @@
 
 <script>
 import store from "@/store";
-
 export default {
   computed: {
     store() {
-      return store;
+      return store
     }
+  },
+  methods:{
+    addToCart(product) {
+      this.$store.commit('productCartAdd', product);
+    },
   },
   mounted() {
     if (localStorage.token !== undefined && localStorage.token !== null) {
       store.state.user_token = localStorage.token;
     }
-    this.$store.commit('fetchProducts');
+    this.$store.commit('getCatalogProducts');
   },
-};
+}
 </script>
+
 
 <style scoped>
 .product-container {

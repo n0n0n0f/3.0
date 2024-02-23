@@ -3,11 +3,11 @@
     <div class="cart-header">
       <router-link class="back-link" to="/">Вернуться назад</router-link>
     </div>
-    <div v-show="store.state.realCart.length === 0">
+    <div v-show="store.state.cartList.length === 0">
       <h2 class="empty-msg">Корзина пуста</h2>
     </div>
-    <div class="cart-items-container" v-show="store.state.realCart.length > 0">
-      <div class="cart-item" v-for="(item, index) in store.state.realCart" :key="item.id">
+    <div class="cart-items-container" v-if="store.state.cartList.length > 0">
+      <div class="cart-item" v-for="item in store.state.cartList" :key="item.id">
         <div class="item-details">
           <div class="item-info">
             <p class="item-name">{{ item.name }}</p>
@@ -15,33 +15,51 @@
             <p class="item-price">Цена: <span class="price">{{ item.price }}</span></p>
           </div>
           <div class="quantity-actions">
-            <button @click="store.commit('removeFromCart', item)" :disabled="item.quantity === 1" class="quantity-button">-</button>
+            <button class="quantity-button" @click="cartMinus(item)">-</button>
             <p class="quantity">Количество: <span class="quantity-value">{{ item.quantity }}</span></p>
-            <button @click="store.commit('addToCart', item)" class="quantity-button">+</button>
+            <button class="quantity-button" @click="cartPlus(item)">+</button>
           </div>
         </div>
-        <button class="delete-button" @click="store.commit('delFromCart', item)">Удалить</button>
+        <button class="delete-button " @click="removeCart(item.id)">Удалить из корзины</button>
       </div>
     </div>
-    <router-link to="/order" class="order-button" v-show="store.state.realCart.length > 0" @click="store.commit('orderCreate')">Оформить заказ</router-link>
+    <button class="order-button" @click="arrangeOrder" :disabled="store.state.cartList.length === 0">
+      Оформить заказ
+    </button>
   </div>
 </template>
 
 <script>
 import store from "@/store";
+
 export default {
   computed: {
     store() {
-      return store;
+      return store
     }
   },
-  methods: {
-    placeOrder() {
-      console.log('Clicked to place order');
-      this.store.commit('createOrder');
-    }
+  created() {
+    this.$store.commit('fetchCardList');
+  },
+  methods:{
+    removeCart(productId) {
+      this.$store.commit('removeCart', productId);
+    },
+    arrangeOrder() {
+      this.$store.commit('arrangeOrder');
+    },
+    cartMinus(item) {
+      if (item.quantity > 1) {
+        const newQuantity = item.quantity - 1;
+        this.$store.commit('cartMinusPlus', { productId: item.id, newQuantity });
+      }
+    },
+    cartPlus(item) {
+      const newQuantity = item.quantity + 1;
+      this.$store.commit('cartMinusPlus', { productId: item.id, newQuantity });
+    },
   }
-};
+}
 </script>
 
 <style scoped>
