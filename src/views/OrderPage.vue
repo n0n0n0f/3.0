@@ -1,76 +1,42 @@
 <template>
   <div class="orders-container">
-    <h2>Your Orders:</h2>
+    <h2>Ваши заказы</h2>
     <div class="order-header">
-      <router-link class="prev-link" to="/">Go Back</router-link>
+      <router-link class="prev-link" to="/">Назад</router-link>
     </div>
     <div v-show="store.state.orderList.length === 0">
-      <h2 class="no-orders-msg">You have no orders at the moment.</h2>
+      <h2 class="no-orders-msg">В данный момент нет заказов</h2>
     </div>
     <div class="order" v-for="order in store.state.orderList" :key="order.id">
       <ul>
-        <li class="product" v-for="productId in order.products" :key="productId">
-          <p><strong>{{ store.state.orderList(productId) }}</strong></p>
-          <p><strong>Description:</strong> {{ getProductDescription(productId) }}</p>
-          <p><strong>Quantity:</strong> {{ getProductQuantity(productId) }}</p>
-          <p><strong>Price:</strong> {{ getProductPrice(productId) }}</p>
-        </li>
+        <h3 class="order_number">Заказ: {{ order.id }}</h3>
+        <p>Список товаров в заказе:</p>
+        <ul>
+          <li v-for="item in order.products" :key="item">
+            <p class="item">id товара: {{ item }}</p>
+            <p class="item">Товар: {{ this.store.state.products.find(p => p.id === item).name }}</p>
+          </li>
+          <p>стоимость: {{ order.order_price }} руб.</p>
+        </ul>
       </ul>
-      <hr>
-      <p><strong>Total: {{ fullPrice(order) }}</strong></p>
     </div>
   </div>
 </template>
 
 <script>
 import store from "@/store";
-import axios from "axios";
 
 export default {
   computed: {
     store() {
-      return store;
+      return store
     }
   },
-  methods: {
-    async getProductTitle(productId) {
-      const product = await this.getProduct(productId);
-      return product.title || 'Product Title Unavailable';
-    },
-    async getProductDescription(productId) {
-      const product = await this.getProduct(productId);
-      return product.description || 'Product Description Unavailable';
-    },
-    async getProductQuantity(productId) {
-      const product = await this.getProduct(productId);
-      return product.quantity || 0;
-    },
-    async getProductPrice(productId) {
-      const product = await this.getProduct(productId);
-      return product.price || 0;
-    },
-    async getProduct(productId) {
-      const token = this.store.state.user_token;
-      try {
-        const response = await axios.get(`https://jurapro.bhuser.ru/api-shop/products/${productId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        return response.data.data;
-      } catch (error) {
-        console.log(error);
-        return {}; // Return empty object in case of error
-      }
-    },
-    fullPrice(order) {
-      if (!order || !order.products) {
-        return 0;
-      }
-      return order.products.reduce((total, product) => total + product.price * product.quantity, 0);
-    },
-  },
+  mounted() {
+    this.$store.commit('getOrders');
+  }
 }
+
 </script>
 
 <style scoped>
@@ -101,6 +67,10 @@ export default {
   padding: 10px;
   margin-bottom: 10px;
   background-color: #d8bfd8;
+}
+
+li {
+  list-style-type: none;
 }
 
 .prev-link {

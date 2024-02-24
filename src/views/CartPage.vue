@@ -1,7 +1,7 @@
 <template>
   <div class="cart-container">
     <div class="cart-header">
-      <router-link class="back-link" to="/">Вернуться назад</router-link>
+      <router-link class="back-link" to="/">Назад</router-link>
     </div>
     <div v-if="store.state.cartList.length === 0">
       <h2 class="empty-msg">Корзина пуста</h2>
@@ -22,14 +22,13 @@
         </div>
         <button class="delete-button" @click="removeCart(item.id)">Удалить из корзины</button>
       </div>
-      <button class="order-button" @click="arrangeOrder">
-        Оформить заказ
-      </button>
+      <button class="order-button" @click="store.commit('arrangeOrder')">Оформить заказ</button>
     </div>
   </div>
 </template>
 <script>
-import store from "@/store"; // Импорт Vuex
+import store from "@/store";
+import axios from "axios";
 
 export default {
   computed: {
@@ -43,9 +42,6 @@ export default {
   methods:{
     removeCart(productId) {
       this.$store.commit('removeCart', productId);
-    },
-    arrangeOrder() {
-      this.$store.commit('arrangeOrder');
     },
     cartMinus(item) {
       if (item && typeof item.quantity !== 'undefined' && !isNaN(item.quantity)) {
@@ -71,8 +67,6 @@ export default {
         this.updateCartQuantity(item.id, newQuantity);
       }
     },
-
-
     updateCartQuantity(productId, newQuantity) {
       this.$store.commit('cartMinusPlus', { productId, newQuantity });
     }

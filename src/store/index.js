@@ -15,68 +15,6 @@ export default createStore({
 
     },
     mutations: {
-        async getCatalogProducts(state){
-            const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/products')
-                .then(response => state.products = response.data)
-                .catch(error =>{console.log(error)})
-            state.products = data;
-        },
-        async registration(state){
-            const data = await axios.post('https://jurapro.bhuser.ru/api-shop/signup', {
-                fio: state.fio,
-                email: state.email,
-                password: state.password
-            })
-                .then(function(response){
-                    state.user_token = response.data.data.user_token;
-                    localStorage.token = state.user_token;
-                    console.log(response.data.data);
-                    alert('Регистрация прошла успешно');
-                    if(localStorage.token !== null && localStorage.token !== undefined){
-                        window.location.href = "/login";
-                    }
-                })
-                .catch(error =>{console.log(error)
-                    alert('Регистрация провалена. Попробуйте еще раз');
-                })
-        },
-        async login(state){
-            const data = await axios.post('https://jurapro.bhuser.ru/api-shop/login', {
-                email: state.email,
-                password: state.password
-            })
-                .then(function(response){
-                    state.user_token = response.data.data.user_token;
-                    localStorage.token = state.user_token;
-                    console.log(response.data.data);
-                    alert('Авторизация прошла успешно');
-                })
-                .catch(error =>{console.log(error)
-                    alert('Авторизация провалена. Попробуйте еще раз');
-                })
-            if(localStorage.token !== undefined && localStorage.token !== null){
-                window.location.href = "/";
-            }
-        },
-        async logout(state) {
-            const token = state.user_token;
-            const response = await axios.get(`https://jurapro.bhuser.ru/api-shop/logout`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    if (response.status === 200 && response.data.data.message === 'logout') {
-                        console.log(response.data);
-                        // localStorage.removeItem('user_token');
-                    }
-                })
-                .catch(error => {console.log(error);
-                });
-            state.user_token = null;
-            localStorage.clear();
-            state.cartList = [];
-    },
         productCartAdd(state, product) {
             const token = state.user_token;
             if (token) {
@@ -93,7 +31,7 @@ export default createStore({
                     .catch(error => {console.log(error);
                     });
             } else {
-                console.log('Пользователь не авторизован');
+                console.log('Пользователь не авторизирован');
             }
         },
         fetchCardList(state) {
@@ -111,7 +49,7 @@ export default createStore({
                     .catch(error => {console.log(error);
                     });
             } else {
-                console.log('Пользователь не авторизован');
+                console.log('Пользователь не авторизирован');
             }
         },
         removeCart(state, productId) {
@@ -137,7 +75,7 @@ export default createStore({
                         }
                     });
             } else {
-                console.log('Пользователь не авторизован');
+                console.log('Пользователь не авторизирован');
             }
         },
         cartMinusPlus(state, { productId, newQuantity }) {
@@ -146,7 +84,73 @@ export default createStore({
                 productToUpdate.quantity = newQuantity;
             }
         },
-
+        async getCatalogProducts(state){
+            const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/products')
+                .then(response => state.products = response.data)
+                .catch(error =>{console.log(error)})
+            state.products = data;
+        },
+        async registration(state){
+            const data = await axios.post('https://jurapro.bhuser.ru/api-shop/signup', {
+                fio: state.fio,
+                email: state.email,
+                password: state.password
+            })
+                .then(function(response){
+                    state.user_token = response.data.data.user_token;
+                    localStorage.token = state.user_token;
+                    console.log(response.data.data);
+                    if(localStorage.token !== null && localStorage.token !== undefined){
+                        window.location.href = "/login";
+                    }
+                })
+                .catch(error =>{console.log(error)
+                    alert('Попробуйте еще раз');
+                })
+        },
+        async login(state){
+            const data = await axios.post('https://jurapro.bhuser.ru/api-shop/login', {
+                email: state.email,
+                password: state.password
+            })
+                .then(function(response){
+                    state.user_token = response.data.data.user_token;
+                    localStorage.token = state.user_token;
+                    console.log(response.data.data);
+                })
+                .catch(error =>{console.log(error)
+                    alert('Попробуйте еще раз');
+                })
+            if(localStorage.token !== undefined && localStorage.token !== null){
+                window.location.href = "/";
+            }
+        },
+        async logout(state) {
+            const token = state.user_token;
+            const response = await axios.get(`https://jurapro.bhuser.ru/api-shop/logout`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (response.status === 200 && response.data.data.message === 'logout') {
+                        console.log(response.data);
+                        // localStorage.removeItem('user_token');
+                    }
+                })
+                .catch(error => {console.log(error);
+                });
+            state.user_token = null;
+            localStorage.clear();
+            state.cartList = [];
+        },
+        async getOrders(state){
+            const {data} = await axios.get('https://jurapro.bhuser.ru/api-shop/order',{headers:{Authorization: `Bearer ${state.user_token}`}})
+                .then(response => state.orderList = response.data)
+                .catch(error =>{console.log(error)})
+            state.orderList = data;
+            console.log('Orders checker',state.orderList)
+        },
         async arrangeOrder(state) {
             const token = state.user_token;
             if (token) {
@@ -161,9 +165,8 @@ export default createStore({
                         }
                     );
                     if (response.status === 201) {
-                        // Добавляем заказ в начало списка заказов
                         state.orderList.unshift(response.data.data);
-                        state.cartList = []; // Очищаем корзину
+                        state.cartList = [];
                         console.log({ data: { order_id: response.data.data.id, message: 'Order is processed' } });
                     }
                 } catch (error) {
@@ -176,6 +179,7 @@ export default createStore({
             } else {
                 console.log('User is not authenticated');
             }
+
         },
         setOrders(state, orders) {
             state.orderList = orders;
